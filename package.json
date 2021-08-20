@@ -1,8 +1,9 @@
 {
   "name": "@capaj/typegraphql-prisma",
-  "version": "0.14.9",
+  "version": "0.14.10",
   "scripts": {
     "build": "tsc",
+    "prepublishOnly": "tsc",
     "package:build": "./package.sh",
     "package:publish": "cd package *&& npm publish",
     "check:type": "tsc --noEmit",
