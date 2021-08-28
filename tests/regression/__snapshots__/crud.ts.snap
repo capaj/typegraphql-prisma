@@ -1658,84 +1658,84 @@ const AggregateUser_1 = require(\\"../../outputs/AggregateUser\\");
 const UserGroupBy_1 = require(\\"../../outputs/UserGroupBy\\");
 let UserCrudResolver = class UserCrudResolver {
     async user(ctx, info, args) {
-        const { _count } = helpers_1.transformFields(graphql_fields_1.default(info));
-        return helpers_1.getPrismaFromContext(ctx).user.findUnique({
+        const { _count } = (0, helpers_1.transformFields)((0, graphql_fields_1.default)(info));
+        return (0, helpers_1.getPrismaFromContext)(ctx).user.findUnique({
             ...args,
-            ...(_count && helpers_1.transformCountFieldIntoSelectRelationsCount(_count)),
+            ...(_count && (0, helpers_1.transformCountFieldIntoSelectRelationsCount)(_count)),
         });
     }
     async findFirstUser(ctx, info, args) {
-        const { _count } = helpers_1.transformFields(graphql_fields_1.default(info));
-        return helpers_1.getPrismaFromContext(ctx).user.findFirst({
+        const { _count } = (0, helpers_1.transformFields)((0, graphql_fields_1.default)(info));
+        return (0, helpers_1.getPrismaFromContext)(ctx).user.findFirst({
             ...args,
-            ...(_count && helpers_1.transformCountFieldIntoSelectRelationsCount(_count)),
+            ...(_count && (0, helpers_1.transformCountFieldIntoSelectRelationsCount)(_count)),
         });
     }
     async users(ctx, info, args) {
-        const { _count } = helpers_1.transformFields(graphql_fields_1.default(info));
-        return helpers_1.getPrismaFromContext(ctx).user.findMany({
+        const { _count } = (0, helpers_1.transformFields)((0, graphql_fields_1.default)(info));
+        return (0, helpers_1.getPrismaFromContext)(ctx).user.findMany({
             ...args,
-            ...(_count && helpers_1.transformCountFieldIntoSelectRelationsCount(_count)),
+            ...(_count && (0, helpers_1.transformCountFieldIntoSelectRelationsCount)(_count)),
         });
     }
     async createUser(ctx, info, args) {
-        const { _count } = helpers_1.transformFields(graphql_fields_1.default(info));
-        return helpers_1.getPrismaFromContext(ctx).user.create({
+        const { _count } = (0, helpers_1.transformFields)((0, graphql_fields_1.default)(info));
+        return (0, helpers_1.getPrismaFromContext)(ctx).user.create({
             ...args,
-            ...(_count && helpers_1.transformCountFieldIntoSelectRelationsCount(_count)),
+            ...(_count && (0, helpers_1.transformCountFieldIntoSelectRelationsCount)(_count)),
         });
     }
     async createManyUser(ctx, info, args) {
-        const { _count } = helpers_1.transformFields(graphql_fields_1.default(info));
-        return helpers_1.getPrismaFromContext(ctx).user.createMany({
+        const { _count } = (0, helpers_1.transformFields)((0, graphql_fields_1.default)(info));
+        return (0, helpers_1.getPrismaFromContext)(ctx).user.createMany({
             ...args,
-            ...(_count && helpers_1.transformCountFieldIntoSelectRelationsCount(_count)),
+            ...(_count && (0, helpers_1.transformCountFieldIntoSelectRelationsCount)(_count)),
         });
     }
     async deleteUser(ctx, info, args) {
-        const { _count } = helpers_1.transformFields(graphql_fields_1.default(info));
-        return helpers_1.getPrismaFromContext(ctx).user.delete({
+        const { _count } = (0, helpers_1.transformFields)((0, graphql_fields_1.default)(info));
+        return (0, helpers_1.getPrismaFromContext)(ctx).user.delete({
             ...args,
-            ...(_count && helpers_1.transformCountFieldIntoSelectRelationsCount(_count)),
+            ...(_count && (0, helpers_1.transformCountFieldIntoSelectRelationsCount)(_count)),
         });
     }
     async updateUser(ctx, info, args) {
-        const { _count } = helpers_1.transformFields(graphql_fields_1.default(info));
-        return helpers_1.getPrismaFromContext(ctx).user.update({
+        const { _count } = (0, helpers_1.transformFields)((0, graphql_fields_1.default)(info));
+        return (0, helpers_1.getPrismaFromContext)(ctx).user.update({
             ...args,
-            ...(_count && helpers_1.transformCountFieldIntoSelectRelationsCount(_count)),
+            ...(_count && (0, helpers_1.transformCountFieldIntoSelectRelationsCount)(_count)),
         });
     }
     async deleteManyUser(ctx, info, args) {
-        const { _count } = helpers_1.transformFields(graphql_fields_1.default(info));
-        return helpers_1.getPrismaFromContext(ctx).user.deleteMany({
+        const { _count } = (0, helpers_1.transformFields)((0, graphql_fields_1.default)(info));
+        return (0, helpers_1.getPrismaFromContext)(ctx).user.deleteMany({
             ...args,
-            ...(_count && helpers_1.transformCountFieldIntoSelectRelationsCount(_count)),
+            ...(_count && (0, helpers_1.transformCountFieldIntoSelectRelationsCount)(_count)),
         });
     }
     async updateManyUser(ctx, info, args) {
-        const { _count } = helpers_1.transformFields(graphql_fields_1.default(info));
-        return helpers_1.getPrismaFromContext(ctx).user.updateMany({
+        const { _count } = (0, helpers_1.transformFields)((0, graphql_fields_1.default)(info));
+        return (0, helpers_1.getPrismaFromContext)(ctx).user.updateMany({
             ...args,
-            ...(_count && helpers_1.transformCountFieldIntoSelectRelationsCount(_count)),
+            ...(_count && (0, helpers_1.transformCountFieldIntoSelectRelationsCount)(_count)),
         });
     }
     async upsertUser(ctx, info, args) {
-        const { _count } = helpers_1.transformFields(graphql_fields_1.default(info));
-        return helpers_1.getPrismaFromContext(ctx).user.upsert({
+        const { _count } = (0, helpers_1.transformFields)((0, graphql_fields_1.default)(info));
+        return (0, helpers_1.getPrismaFromContext)(ctx).user.upsert({
             ...args,
-            ...(_count && helpers_1.transformCountFieldIntoSelectRelationsCount(_count)),
+            ...(_count && (0, helpers_1.transformCountFieldIntoSelectRelationsCount)(_count)),
         });
     }
     async aggregateUser(ctx, info, args) {
-        return helpers_1.getPrismaFromContext(ctx).user.aggregate({
+        return (0, helpers_1.getPrismaFromContext)(ctx).user.aggregate({
             ...args,
-            ...helpers_1.transformFields(graphql_fields_1.default(info)),
+            ...(0, helpers_1.transformFields)((0, graphql_fields_1.default)(info)),
         });
     }
     async groupByUser(ctx, info, args) {
-        const { _count, _avg, _sum, _min, _max } = helpers_1.transformFields(graphql_fields_1.default(info));
-        return helpers_1.getPrismaFromContext(ctx).user.groupBy({
+        const { _count, _avg, _sum, _min, _max } = (0, helpers_1.transformFields)((0, graphql_fields_1.default)(info));
+        return (0, helpers_1.getPrismaFromContext)(ctx).user.groupBy({
             ...args,
             ...Object.fromEntries(Object.entries({ _count, _avg, _sum, _min, _max }).filter(([_, v]) => v != null)),
         });
