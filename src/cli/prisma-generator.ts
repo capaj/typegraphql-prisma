@@ -8,12 +8,16 @@ import generateCode from "../generator/generate-code";
 import removeDir from "../utils/removeDir";
 import { GenerateCodeOptions } from "../generator/options";
 import { toUnixPath } from "../generator/helpers";
+import { EmitBlockKind } from "../generator/emit-block";
 
 function parseStringBoolean(stringBoolean: string | undefined) {
   return stringBoolean ? stringBoolean === "true" : undefined;
 }
 
 export async function generate(options: GeneratorOptions) {
+  const generatorConfig = options.generator.config;
+  console.log("~ generatorConfig", generatorConfig);
+
   const outputDir = parseEnvValue(options.generator.output!);
   await asyncFs.mkdir(outputDir, { recursive: true });
   await removeDir(outputDir, true);
@@ -25,7 +29,6 @@ export async function generate(options: GeneratorOptions) {
   const prismaClientDmmf = require(prismaClientPath)
     .dmmf as PrismaDMMF.Document;
 
-  const generatorConfig = options.generator.config;
   const config: GenerateCodeOptions = {
     emitDMMF: parseStringBoolean(generatorConfig.emitDMMF),
     emitTranspiledCode: parseStringBoolean(generatorConfig.emitTranspiledCode),
@@ -35,7 +38,7 @@ export async function generate(options: GeneratorOptions) {
       generatorConfig.useUncheckedScalarInputs,
     ),
     emitIdAsIDType: parseStringBoolean(generatorConfig.emitIdAsIDType),
-
+    emitOnly: generatorConfig.emitOnly?.split(",") as EmitBlockKind[],
     /* internal options */
     outputDirPath: outputDir,
     relativePrismaOutputPath: toUnixPath(

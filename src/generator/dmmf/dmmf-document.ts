@@ -29,6 +29,7 @@ export class DmmfDocument implements DMMF.Document {
       // emitOnly: ALL_BLOCKS,
       ...options,
     };
+    console.log("~ options", options);
 
     const enumTypes = [
       ...(schema.enumTypes.prisma ?? []),
