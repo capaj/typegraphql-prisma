@@ -63,13 +63,13 @@ export function transformModelWithFields(dmmfDocument: DmmfDocument) {
   return (model: PrismaDMMF.Model): DMMF.Model => {
     return {
       ...transformBareModel(model),
-      fields: model.fields.map(transformField(dmmfDocument)),
+      fields: model.fields.map(transformModelField(dmmfDocument)),
     };
   };
 }
 
-function transformField(dmmfDocument: DmmfDocument) {
-  return (field: PrismaDMMF.Field): DMMF.Field => {
+function transformModelField(dmmfDocument: DmmfDocument) {
+  return (field: PrismaDMMF.Field): DMMF.ModelField => {
     const attributeArgs = parseDocumentationAttributes<{ name: string }>(
       field.documentation,
       "field",
@@ -84,7 +84,9 @@ function transformField(dmmfDocument: DmmfDocument) {
     const typeInfo: DMMF.TypeInfo = {
       location,
       isList: field.isList,
-      type: field.type,
+      type: dmmfDocument.isModelName(field.type)
+        ? dmmfDocument.getModelTypeName(field.type)!
+        : field.type,
     };
     const fieldTSType = getFieldTSType(
       dmmfDocument,
@@ -92,7 +94,13 @@ function transformField(dmmfDocument: DmmfDocument) {
       field.isRequired,
       false,
     );
-    const typeGraphQLType = getTypeGraphQLType(typeInfo, dmmfDocument);
+    const typeGraphQLType = getTypeGraphQLType(
+      typeInfo,
+      dmmfDocument,
+      undefined,
+      undefined,
+      field.isId,
+    );
     const { output = false, input = false } = parseDocumentationAttributes<{
       output: boolean;
       input: boolean;
@@ -133,6 +141,9 @@ function transformInputType(dmmfDocument: DmmfDocument) {
           const modelField = modelType?.fields.find(
             it => it.name === field.name,
           );
+          // if (modelType?.name === "post") {
+          //   console.log(inputType.name, field.name, modelField?.isOmitted);
+          // }
           const typeName = modelField?.typeFieldAlias ?? field.name;
           const selectedInputType = selectInputTypeFromTypes(dmmfDocument)(
             field.inputTypes,
@@ -154,6 +165,7 @@ function transformInputType(dmmfDocument: DmmfDocument) {
             typeGraphQLType,
             fieldTSType,
             hasMappedName: field.name !== typeName,
+            isOmitted: modelField?.isOmitted.input ?? false,
           };
         }),
     };
@@ -165,6 +177,7 @@ function transformOutputType(dmmfDocument: DmmfDocument) {
     const typeName = getMappedOutputTypeName(dmmfDocument, outputType.name);
     return {
       ...outputType,
+
       typeName,
       fields: outputType.fields
         .filter(field => field.deprecation === undefined)
@@ -210,6 +223,7 @@ function transformOutputType(dmmfDocument: DmmfDocument) {
               hasMappedName: arg.name !== typeName,
               // TODO: add proper mapping in the future if needed
               typeName: arg.name,
+              isOmitted: false,
             };
           });
           const argsTypeName =
@@ -231,14 +245,19 @@ function transformOutputType(dmmfDocument: DmmfDocument) {
   };
 }
 
-function getMappedOutputTypeName(
+export function getMappedOutputTypeName(
   dmmfDocument: DmmfDocument,
   outputTypeName: string,
 ): string {
   if (outputTypeName.startsWith("Aggregate")) {
-    return `Aggregate${dmmfDocument.getModelTypeName(
+    const modelTypeName = dmmfDocument.getModelTypeName(
       outputTypeName.replace("Aggregate", ""),
-    )}`;
+    );
+    return `Aggregate${modelTypeName}`;
+  }
+
+  if (dmmfDocument.isModelName(outputTypeName)) {
+    return dmmfDocument.getModelTypeName(outputTypeName)!;
   }
 
   const dedicatedTypeSuffix = [
@@ -345,6 +364,11 @@ function selectInputTypeFromTypes(dmmfDocument: DmmfDocument) {
     possibleInputTypes = inputTypes.filter(
       it => it.location === "inputObjectTypes",
     );
+    if (possibleInputTypes.length === 0) {
+      possibleInputTypes = inputTypes.filter(
+        it => it.location === "scalar" && it.type !== "Null",
+      );
+    }
     if (possibleInputTypes.length === 0) {
       possibleInputTypes = inputTypes.filter(it => it.location === "enumTypes");
     }
@@ -454,9 +478,6 @@ export function generateRelationModel(dmmfDocument: DmmfDocument) {
     const outputType = dmmfDocument.schema.outputTypes.find(
       type => type.name === model.name,
     )!;
-    if (!outputType) {
-      console.log(dmmfDocument.schema.outputTypes, model);
-    }
     const resolverName = `${model.typeName}RelationsResolver`;
     const relationFields = model.fields
       .filter(field => field.relationName && !field.isOmitted.output)
@@ -473,6 +494,7 @@ export function generateRelationModel(dmmfDocument: DmmfDocument) {
           ...field,
           outputTypeField,
           argsTypeName,
+          type: dmmfDocument.getModelTypeName(field.type)!,
         };
       });
 

@@ -180,7 +180,93 @@ export class NativeTypeModel {
 "
 `;
 
-exports[`models should properly generate object type class for prisma model with omitted field: User 1`] = `
+exports[`models should properly generate object type class for prisma model with omitted input field: User 1`] = `
+"import * as TypeGraphQL from \\"type-graphql\\";
+import * as GraphQLScalars from \\"graphql-scalars\\";
+import { Prisma } from \\"../../../helpers/prisma-client-mock\\";
+import { DecimalJSScalar } from \\"../scalars\\";
+
+@TypeGraphQL.ObjectType({
+  isAbstract: true
+})
+export class User {
+  @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
+    nullable: false
+  })
+  id!: number;
+
+  @TypeGraphQL.Field(_type => Date, {
+    nullable: false
+  })
+  dateOfBirth!: Date;
+
+  @TypeGraphQL.Field(_type => String, {
+    nullable: false
+  })
+  name!: string;
+
+  @TypeGraphQL.Field(_type => TypeGraphQL.Float, {
+    nullable: true
+  })
+  balance?: number | null;
+}
+"
+`;
+
+exports[`models should properly generate object type class for prisma model with renamed fields: User 1`] = `
+"import * as TypeGraphQL from \\"type-graphql\\";
+import * as GraphQLScalars from \\"graphql-scalars\\";
+import { Prisma } from \\"../../../helpers/prisma-client-mock\\";
+import { DecimalJSScalar } from \\"../scalars\\";
+import { Post } from \\"../models/Post\\";
+import { UserCount } from \\"../resolvers/outputs/UserCount\\";
+
+@TypeGraphQL.ObjectType({
+  isAbstract: true
+})
+export class User {
+  @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
+    nullable: false
+  })
+  id!: number;
+
+  @TypeGraphQL.Field(_type => Date, {
+    nullable: false
+  })
+  dateOfBirth!: Date;
+
+  /** renamed field docs */
+  name!: string;
+
+  balance!: number | null;
+
+  posts?: Post[];
+
+  @TypeGraphQL.Field(_type => UserCount, {
+    nullable: true
+  })
+  _count?: UserCount | null;
+
+  /** renamed field docs */
+  @TypeGraphQL.Field(_type => String, {
+    nullable: false,
+    description: \\"renamed field docs\\"
+  })
+  get firstName(): string {
+    return this.name;
+  }
+
+  @TypeGraphQL.Field(_type => TypeGraphQL.Float, {
+    nullable: true
+  })
+  get accountBalance(): number | null {
+    return this.balance ?? null;
+  }
+}
+"
+`;
+
+exports[`models should properly generate object type class for prisma model without omitted output field: User 1`] = `
 "import * as TypeGraphQL from \\"type-graphql\\";
 import * as GraphQLScalars from \\"graphql-scalars\\";
 import { Prisma } from \\"../../../helpers/prisma-client-mock\\";
@@ -206,53 +292,6 @@ export class User {
   name!: string;
 
   balance?: number | null;
-}
-"
-`;
-
-exports[`models should properly generate object type class for prisma model with renamed fields: User 1`] = `
-"import * as TypeGraphQL from \\"type-graphql\\";
-import * as GraphQLScalars from \\"graphql-scalars\\";
-import { Prisma } from \\"../../../helpers/prisma-client-mock\\";
-import { DecimalJSScalar } from \\"../scalars\\";
-import { Post } from \\"../models/Post\\";
-
-@TypeGraphQL.ObjectType({
-  isAbstract: true
-})
-export class User {
-  @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
-    nullable: false
-  })
-  id!: number;
-
-  @TypeGraphQL.Field(_type => Date, {
-    nullable: false
-  })
-  dateOfBirth!: Date;
-
-  /** renamed field docs */
-  name!: string;
-
-  balance!: number | null;
-
-  posts?: Post[];
-
-  /** renamed field docs */
-  @TypeGraphQL.Field(_type => String, {
-    nullable: false,
-    description: \\"renamed field docs\\"
-  })
-  get firstName(): string {
-    return this.name;
-  }
-
-  @TypeGraphQL.Field(_type => TypeGraphQL.Float, {
-    nullable: true
-  })
-  get accountBalance(): number | null {
-    return this.balance ?? null;
-  }
 }
 "
 `;
@@ -289,6 +328,7 @@ import * as GraphQLScalars from \\"graphql-scalars\\";
 import { Prisma } from \\"../../../helpers/prisma-client-mock\\";
 import { DecimalJSScalar } from \\"../scalars\\";
 import { Article } from \\"../models/Article\\";
+import { ClientCount } from \\"../resolvers/outputs/ClientCount\\";
 
 @TypeGraphQL.ObjectType({
   isAbstract: true
@@ -300,6 +340,11 @@ export class Client {
   id!: number;
 
   posts?: Article[];
+
+  @TypeGraphQL.Field(_type => ClientCount, {
+    nullable: true
+  })
+  _count?: ClientCount | null;
 }
 "
 `;
@@ -336,6 +381,7 @@ import * as GraphQLScalars from \\"graphql-scalars\\";
 import { Prisma } from \\"../../../helpers/prisma-client-mock\\";
 import { DecimalJSScalar } from \\"../scalars\\";
 import { Post } from \\"../models/Post\\";
+import { UserCount } from \\"../resolvers/outputs/UserCount\\";
 
 @TypeGraphQL.ObjectType({
   isAbstract: true
@@ -347,6 +393,11 @@ export class User {
   id!: number;
 
   posts?: Post[];
+
+  @TypeGraphQL.Field(_type => UserCount, {
+    nullable: true
+  })
+  _count?: UserCount | null;
 }
 "
 `;
@@ -356,6 +407,7 @@ exports[`models should properly generate object type classes for prisma models w
 import * as GraphQLScalars from \\"graphql-scalars\\";
 import { Prisma } from \\"../../../helpers/prisma-client-mock\\";
 import { DecimalJSScalar } from \\"../scalars\\";
+import { ServiceCount } from \\"../resolvers/outputs/ServiceCount\\";
 
 @TypeGraphQL.ObjectType({
   isAbstract: true
@@ -379,6 +431,67 @@ export class Service {
   sourceId?: number | null;
 
   services?: Service[];
+
+  @TypeGraphQL.Field(_type => ServiceCount, {
+    nullable: true
+  })
+  _count?: ServiceCount | null;
+}
+"
+`;
+
+exports[`models when emitIdAsIDType is set to true should properly generate model object type class: FirstModel 1`] = `
+"import * as TypeGraphQL from \\"type-graphql\\";
+import * as GraphQLScalars from \\"graphql-scalars\\";
+import { Prisma } from \\"../../../helpers/prisma-client-mock\\";
+import { DecimalJSScalar } from \\"../scalars\\";
+
+@TypeGraphQL.ObjectType({
+  isAbstract: true
+})
+export class FirstModel {
+  @TypeGraphQL.Field(_type => TypeGraphQL.ID, {
+    nullable: false
+  })
+  intIdField!: number;
+
+  @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
+    nullable: false
+  })
+  intField!: number;
+
+  @TypeGraphQL.Field(_type => TypeGraphQL.Float, {
+    nullable: false
+  })
+  floatField!: number;
+}
+"
+`;
+
+exports[`models when emitIdAsIDType is set to true should properly generate model object type class: SecondModel 1`] = `
+"import * as TypeGraphQL from \\"type-graphql\\";
+import * as GraphQLScalars from \\"graphql-scalars\\";
+import { Prisma } from \\"../../../helpers/prisma-client-mock\\";
+import { DecimalJSScalar } from \\"../scalars\\";
+
+@TypeGraphQL.ObjectType({
+  isAbstract: true
+})
+export class SecondModel {
+  @TypeGraphQL.Field(_type => TypeGraphQL.ID, {
+    nullable: false
+  })
+  stringIdField!: string;
+
+  @TypeGraphQL.Field(_type => String, {
+    nullable: false
+  })
+  stringField!: string;
+
+  @TypeGraphQL.Field(_type => Boolean, {
+    nullable: false
+  })
+  booleanField!: boolean;
 }
 "
 `;
@@ -410,6 +523,42 @@ export class FirstModel {
   floatField!: number;
 
   secondModelsField?: SecondModel[];
+}
+"
+`;
+
+exports[`models when noResolvers is enabled should generate model object type class without _count field: SecondModel 1`] = `
+"import * as TypeGraphQL from \\"type-graphql\\";
+import * as GraphQLScalars from \\"graphql-scalars\\";
+import { Prisma } from \\"../../../helpers/prisma-client-mock\\";
+import { DecimalJSScalar } from \\"../scalars\\";
+import { FirstModel } from \\"../models/FirstModel\\";
+
+@TypeGraphQL.ObjectType({
+  isAbstract: true
+})
+export class SecondModel {
+  @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
+    nullable: false
+  })
+  idField!: number;
+
+  @TypeGraphQL.Field(_type => String, {
+    nullable: false
+  })
+  uniqueStringField!: string;
+
+  @TypeGraphQL.Field(_type => TypeGraphQL.Float, {
+    nullable: false
+  })
+  floatField!: number;
+
+  @TypeGraphQL.Field(_type => TypeGraphQL.Int, {
+    nullable: false
+  })
+  firstModelFieldId!: number;
+
+  firstModelField?: FirstModel;
 }
 "
 `;

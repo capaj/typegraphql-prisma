@@ -170,13 +170,30 @@ describe("models", () => {
     expect(userModelTSFile).toMatchSnapshot("User");
   });
 
-  it("should properly generate object type class for prisma model with omitted field", async () => {
+  it("should properly generate object type class for prisma model without omitted output field", async () => {
     const schema = /* prisma */ `
       model User {
         id           Int       @id @default(autoincrement())
         dateOfBirth  DateTime
         name         String
         /// @TypeGraphQL.omit(output: true)
+        balance      Float?
+      }
+    `;
+
+    await generateCodeFromSchema(schema, { outputDirPath });
+    const userModelTSFile = await readGeneratedFile("/models/User.ts");
+
+    expect(userModelTSFile).toMatchSnapshot("User");
+  });
+
+  it("should properly generate object type class for prisma model with omitted input field", async () => {
+    const schema = /* prisma */ `
+      model User {
+        id           Int       @id @default(autoincrement())
+        dateOfBirth  DateTime
+        name         String
+        /// @TypeGraphQL.omit(input: true)
         balance      Float?
       }
     `;
@@ -242,7 +259,6 @@ describe("models", () => {
     it("should properly generate model object type class", async () => {
       await generateCodeFromSchema(schemaWith2ModelsAndRelation, {
         outputDirPath,
-        previewFeatures: ["selectRelationCount"],
       });
       const firstModelTSFile = await readGeneratedFile("/models/FirstModel.ts");
 
@@ -255,11 +271,42 @@ describe("models", () => {
       await generateCodeFromSchema(schemaWith2ModelsAndRelation, {
         outputDirPath,
         noResolvers: true,
-        previewFeatures: ["selectRelationCount"],
       });
       const firstModelTSFile = await readGeneratedFile("/models/FirstModel.ts");
+      const secondModelTSFile = await readGeneratedFile(
+        "/models/SecondModel.ts",
+      );
 
       expect(firstModelTSFile).toMatchSnapshot("FirstModel");
+      expect(secondModelTSFile).toMatchSnapshot("SecondModel");
+    });
+  });
+  describe("when emitIdAsIDType is set to true", () => {
+    it("should properly generate model object type class", async () => {
+      const schema = /* prisma */ `
+        model FirstModel {
+          intIdField Int   @id @default(autoincrement())
+          intField   Int   @unique
+          floatField Float
+        }
+        model SecondModel {
+          stringIdField String  @id @default(cuid())
+          stringField   String  @unique
+          booleanField  Boolean
+        }
+      `;
+
+      await generateCodeFromSchema(schema, {
+        outputDirPath,
+        emitIdAsIDType: true,
+      });
+      const firstModelTSFile = await readGeneratedFile("/models/FirstModel.ts");
+      const secondModelTSFile = await readGeneratedFile(
+        "/models/SecondModel.ts",
+      );
+
+      expect(firstModelTSFile).toMatchSnapshot("FirstModel");
+      expect(secondModelTSFile).toMatchSnapshot("SecondModel");
     });
   });
 });
