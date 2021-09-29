@@ -16,7 +16,6 @@ function parseStringBoolean(stringBoolean: string | undefined) {
 
 export async function generate(options: GeneratorOptions) {
   const generatorConfig = options.generator.config;
-  console.log("~ generatorConfig", generatorConfig);
 
   const outputDir = parseEnvValue(options.generator.output!);
   await asyncFs.mkdir(outputDir, { recursive: true });
